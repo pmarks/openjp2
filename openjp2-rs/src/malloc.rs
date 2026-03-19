@@ -1,6 +1,7 @@
 #[cfg(not(any(feature = "c_api", feature = "test_malloc")))]
 use std::alloc::{alloc, alloc_zeroed, dealloc, Layout};
 
+#[cfg(any(feature = "c_api", feature = "test_malloc"))]
 extern "C" {
 
   fn malloc(_: usize) -> *mut core::ffi::c_void;
@@ -51,6 +52,7 @@ pub(crate) fn strlen(s: *const i8) -> usize {
   }
 }
 
+#[cfg(any(feature = "c_api", feature = "test_malloc"))]
 pub(crate) fn opj_malloc(mut size: usize) -> *mut core::ffi::c_void {
   if size == 0 {
     /* prevent implementation defined behavior of malloc */
@@ -169,6 +171,7 @@ pub(crate) fn opj_alloc_type<T>() -> *mut T {
   }
 }
 
+#[cfg(any(feature = "c_api", feature = "test_malloc"))]
 pub(crate) fn opj_calloc(mut num: usize, mut size: usize) -> *mut core::ffi::c_void {
   if num == 0 || size == 0 {
     /* prevent implementation defined behavior of calloc */
@@ -251,6 +254,7 @@ pub(crate) fn opj_calloc_type_array<T>(num: usize) -> *mut T {
   }
 }
 
+#[cfg(any(feature = "c_api", feature = "test_malloc"))]
 pub(crate) fn opj_realloc(
   mut ptr: *mut core::ffi::c_void,
   mut new_size: usize,
@@ -296,6 +300,7 @@ pub(crate) fn opj_realloc_type_array<T>(mut ptr: *mut T, old_num: usize, mut num
   }
 }
 
+#[cfg(any(feature = "c_api", feature = "test_malloc"))]
 pub(crate) fn opj_free(mut ptr: *mut core::ffi::c_void) {
   unsafe {
     if !ptr.is_null() {
